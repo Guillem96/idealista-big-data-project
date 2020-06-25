@@ -1,7 +1,41 @@
-idealista
-==============================
+# Idealista Big Data Project
 
 Data gathering and cleaning for University big data project
+
+## Data
+
+### Get the raw data
+
+In this project we use the data provided by the Idelista API. to get the data
+from the Idealista API you need an ApiKey and a Secret code. To objtain those 
+keys got to the [idealista labs request access](http://developers.idealista.com/access-request) web page.
+
+Once you have the API_KEY and the Secret, create a `.env` file just under the 
+project root with the following content:
+
+```
+API_KEY=<api_key>
+SECRET=<secret_code>
+```
+
+Finally, run the `download` command from the `make_dataset` script:
+
+```bash
+$ cd src/data
+$ python make_dataset.py download -o ../../data/raw
+```
+
+The script will go over the most important cities from spain and download all the
+ flats available for rent that are posted in the Idealista web page. 
+
+The data, will look like as follows:
+
+```
+├── data/raw
+    ├── Lleida_rent.json 
+    ├── Barna_rent.json  
+    └── Girona_rent.json
+```
 
 Project Organization
 ------------
