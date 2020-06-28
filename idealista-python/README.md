@@ -6,9 +6,9 @@ Data gathering and cleaning for University big data project
 
 ### Get the raw data
 
-In this project we use the data provided by the Idelista API. to get the data
-from the Idealista API you need an ApiKey and a Secret code. To objtain those 
-keys got to the [idealista labs request access](http://developers.idealista.com/access-request) web page.
+In this project we use the data provided by the [Idelista API](https://api.idealista.com).
+
+To get the data from the Idelista API you need an ApiKey and a Secret code. And to obtain those keys, it is necessary to make a request to the [idealista labs request access](http://developers.idealista.com/access-request) via their web page.
 
 Once you have the API_KEY and the Secret, create a `.env` file just under the 
 project root with the following content:
@@ -25,7 +25,7 @@ $ cd src/data
 $ python make_dataset.py download -o ../../data/raw
 ```
 
-The script will go over the most important cities from spain and download all the
+The script will go over the most important cities in Spain and download all the
  flats available for rent that are posted in the Idealista web page. 
 
 The data, will look like as follows:
@@ -40,8 +40,8 @@ The data, will look like as follows:
 Project Organization
 ------------
 
-    ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── LICENSE            <- Information about the chosen software license.
+    ├── Makefile           <- Makefile with commands like `make data` or `make train`.
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
     │   ├── external       <- Data from third party sources.
@@ -65,7 +65,7 @@ Project Organization
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── setup.py           <- Makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │

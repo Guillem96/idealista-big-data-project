@@ -186,7 +186,7 @@ latex_documents = [
     ('index',
      'idealista.tex',
      u'idealista Documentation',
-     u"Marc, Dani, Guillem", 'manual'),
+     u"Marc, Daniel, Guillem", 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -216,7 +216,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'idealista', u'idealista Documentation',
-     [u"Marc, Dani, Guillem"], 1)
+     [u"Marc, Daniel, Guillem"], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -230,7 +230,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'idealista', u'idealista Documentation',
-     u"Marc, Dani, Guillem", 'idealista',
+     u"Marc, Daniel, Guillem", 'idealista',
      'Data gathering and cleaning for University big data project', 'Miscellaneous'),
 ]
 
