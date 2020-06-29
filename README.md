@@ -25,7 +25,7 @@ Marc Viladegut Abert
 
 #### Coordination:
 Cores Prado, Fernando</br>
-Mateu Piñol, Carlos
+Mateu Piñol, Carles
 
 
 <br/>
