@@ -1,9 +1,11 @@
 package cat.udl.data.processing;
 
 import cat.udl.data.processing.mappers.ColumnsSelectorMapper;
+import cat.udl.data.processing.mappers.FilterRowsMapper;
 import cat.udl.data.processing.writables.CsvRecordWritable;
 import lombok.val;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
@@ -16,6 +18,8 @@ import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import java.net.URI;
+
 public class Main extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
@@ -25,6 +29,7 @@ public class Main extends Configured implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
+
         val conf = new JobConf(getConf(), Main.class);
 
         val parsedArgs = new GenericOptionsParser(conf, args).getRemainingArgs();
@@ -42,17 +47,29 @@ public class Main extends Configured implements Tool {
                 "detailedType_subTypology,parkingSpace_parkingSpacePrice,spain_state");
 
         csvParserConf.set(ColumnsSelectorMapper.SELECTOR,
-                "propertyCode:price,priceByArea,numPhotos,hasLift,propertyType,spain_state");
+                "propertyCode:price,url,rooms,priceByArea,numPhotos,hasLift,propertyType,spain_state");
+
+        val filterConf = new JobConf(false);
+        filterConf.set(FilterRowsMapper.MIN_ROOMS, "4");
+        filterConf.set(FilterRowsMapper.HAS_PHOTOS, "false");
 
         ChainMapper.addMapper(
                 job, ColumnsSelectorMapper.class,
                 Object.class, Text.class, Text.class, CsvRecordWritable.class, csvParserConf);
+
+        ChainMapper.addMapper(
+                job, FilterRowsMapper.class,
+                Text.class, CsvRecordWritable.class, Text.class, CsvRecordWritable.class, filterConf);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(CsvRecordWritable.class);
 
         FileInputFormat.addInputPath(job, new Path(parsedArgs[0]));
         FileOutputFormat.setOutputPath(job, new Path(parsedArgs[1]));
+
+        val outputPath = new Path(args[1]);
+        val fs = FileSystem.get(new URI(outputPath.toString()), conf);
+        fs.delete(outputPath, true);
 
         return (job.waitForCompletion(true) ? 0 : 1);
     }

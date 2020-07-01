@@ -3,7 +3,6 @@ package cat.udl.data.processing.mappers;
 import cat.udl.data.processing.Utils;
 import cat.udl.data.processing.writables.CsvRecordWritable;
 import lombok.val;
-import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
@@ -56,7 +55,7 @@ public class ColumnsSelectorMapper<K> extends Mapper<K, Text, Text, CsvRecordWri
     public void setup(Context context) throws IOException, InterruptedException {
         columnsName = Arrays.asList(
                 context.getConfiguration().get(COLUMNS).split(","));
-        skipHeader = Boolean.parseBoolean(context.getConfiguration().get(SKIP_HEADER, "false"));
+        skipHeader = Boolean.parseBoolean(context.getConfiguration().get(SKIP_HEADER, "true"));
 
         val selector = context.getConfiguration().get(SELECTOR);
         val slicedSelector = selector.split(":");
