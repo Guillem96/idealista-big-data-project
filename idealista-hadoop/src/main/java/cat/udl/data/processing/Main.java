@@ -2,16 +2,19 @@ package cat.udl.data.processing;
 
 import cat.udl.data.processing.mappers.ColumnsSelectorMapper;
 import cat.udl.data.processing.mappers.FilterRowsMapper;
+import cat.udl.data.processing.mappers.HouseCount;
+import cat.udl.data.processing.reducers.TopNReduce;
 import cat.udl.data.processing.writables.CsvRecordWritable;
 import lombok.val;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.MapWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.lib.chain.ChainMapper;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.chain.ChainReducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
@@ -23,6 +26,8 @@ import java.net.URI;
 public class Main extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
+        System.setProperty("hadoop.home.dir","C:\\Hadoop");
+
         int exitCode = ToolRunner.run(new Main(), args);
         System.exit(exitCode);
     }
@@ -47,11 +52,13 @@ public class Main extends Configured implements Tool {
                 "detailedType_subTypology,parkingSpace_parkingSpacePrice,spain_state");
 
         csvParserConf.set(ColumnsSelectorMapper.SELECTOR,
-                "propertyCode:price,url,rooms,priceByArea,numPhotos,hasLift,propertyType,spain_state");
+                "spain_state:price,url,rooms,priceByArea,numPhotos,hasLift,propertyType,spain_state");
 
         val filterConf = new JobConf(false);
         filterConf.set(FilterRowsMapper.MIN_ROOMS, "4");
         filterConf.set(FilterRowsMapper.HAS_PHOTOS, "false");
+
+        val wordcountConf = new JobConf(false);
 
         ChainMapper.addMapper(
                 job, ColumnsSelectorMapper.class,
@@ -61,8 +68,16 @@ public class Main extends Configured implements Tool {
                 job, FilterRowsMapper.class,
                 Text.class, CsvRecordWritable.class, Text.class, CsvRecordWritable.class, filterConf);
 
+        ChainMapper.addMapper(
+                job, HouseCount.class, Text.class, CsvRecordWritable.class, Text.class, LongWritable.class, filterConf
+        );
+
+        ChainReducer.setReducer(
+                job, TopNReduce.class,
+                Text.class, LongWritable.class, Text.class, LongWritable.class, wordcountConf);
+
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(CsvRecordWritable.class);
+        job.setOutputValueClass(LongWritable.class);
 
         FileInputFormat.addInputPath(job, new Path(parsedArgs[0]));
         FileOutputFormat.setOutputPath(job, new Path(parsedArgs[1]));
