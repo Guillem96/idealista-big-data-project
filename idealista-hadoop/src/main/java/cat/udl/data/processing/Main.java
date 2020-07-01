@@ -1,9 +1,11 @@
 package cat.udl.data.processing;
 
 import cat.udl.data.processing.mappers.ColumnsSelectorMapper;
+import cat.udl.data.processing.writables.CsvRecordWritable;
 import lombok.val;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapreduce.lib.chain.ChainMapper;
@@ -44,10 +46,10 @@ public class Main extends Configured implements Tool {
 
         ChainMapper.addMapper(
                 job, ColumnsSelectorMapper.class,
-                Object.class, Text.class, Text.class, Text.class, csvParserConf);
+                Object.class, Text.class, Text.class, CsvRecordWritable.class, csvParserConf);
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputValueClass(CsvRecordWritable.class);
 
         FileInputFormat.addInputPath(job, new Path(parsedArgs[0]));
         FileOutputFormat.setOutputPath(job, new Path(parsedArgs[1]));

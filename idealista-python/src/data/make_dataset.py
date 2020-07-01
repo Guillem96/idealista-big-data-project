@@ -27,7 +27,7 @@ COORDINATES = {
     # 'MALAGA_COORDS':'36.72016,-4.42034', # Done
     
     # 'MURCIA_COORDS':'37.98704,-1.13004',
-    'MALLORCA_COORDS':'39.56939,2.65024', # 23/34
+    # 'MALLORCA_COORDS':'39.56939,2.65024', # 23/34
     'BILBAO_COORDS':'43.26271,-2.92528',
     'SEVILLA_COORDS':'37.38283,-5.97317',
     
@@ -51,7 +51,7 @@ def main():
 
 @main.command()
 @click.option('--operation', 
-              type=click.Choice(['rent', 'sale']), 
+              type=click.Choice(['rent']), 
               default='rent')
 @click.option('--output-dir', '-o', 
               type=click.Path(file_okay=False), 
@@ -64,8 +64,8 @@ def download(operation, output_dir):
 
     # Create the api client
     cli = idealista_client.IdealistaClient(
-        api_key=os.environ['MARC_API_KEY'], 
-        secret=os.environ['MARC_API_SECRET'])
+        api_key=os.environ['GUILLEM_API_KEY'], 
+        secret=os.environ['GUILLEM_API_SECRET'])
 
     # For each city we download all the available flats
     for city, coords in COORDINATES.items():
@@ -80,7 +80,7 @@ def download(operation, output_dir):
         res = cli.search(
             center=coords,
             country='es',
-            distance='5000',
+            distance='50000',
             operation=operation,
             maxItems=1000,
             propertyType='homes',
@@ -101,7 +101,7 @@ def download(operation, output_dir):
             res = cli.search(
                 center=coords,
                 country='es',
-                distance='10000',
+                distance='50000',
                 operation='rent',
                 maxItems=100,
                 propertyType='homes',
