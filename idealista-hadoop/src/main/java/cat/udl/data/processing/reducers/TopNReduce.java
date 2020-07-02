@@ -1,5 +1,6 @@
 package cat.udl.data.processing.reducers;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -16,13 +17,16 @@ public class TopNReduce extends Reducer<Text, LongWritable, Text, LongWritable> 
     public void reduce(Text key, Iterable<LongWritable> values, Context context) {
         int count = 0;
 
+        Configuration conf = context.getConfiguration();
+        int N = conf.getInt("N", 10);
+
         for (LongWritable value : values) {
             count += value.get();
         }
 
         topN.put(count, new Text(key.toString()));
 
-        if (topN.size() > 8)
+        if (topN.size() > N)
             topN.remove(topN.firstKey());
     }
 

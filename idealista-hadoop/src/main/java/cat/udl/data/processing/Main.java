@@ -26,9 +26,13 @@ import java.net.URI;
 public class Main extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
-//        System.setProperty("hadoop.home.dir","C:\\Hadoop");
-
+        // System.setProperty("hadoop.home.dir","C:\\Hadoop");
+        long start = System.nanoTime();
         int exitCode = ToolRunner.run(new Main(), args);
+        long end = System.nanoTime();
+        double total = (end - start)/1000000000.0;
+
+        System.out.printf("\nExecution Time: %.2f seconds\n", total);
         System.exit(exitCode);
     }
 
@@ -59,6 +63,9 @@ public class Main extends Configured implements Tool {
         filterConf.set(FilterRowsMapper.HAS_PHOTOS, "false");
 
         val wordcountConf = new JobConf(false);
+
+        // Defining (according to user input) how many # will figure in the TOP N
+        wordcountConf.setInt("N", Integer.parseInt(args[2]));
 
         ChainMapper.addMapper(
                 job, ColumnsSelectorMapper.class,
