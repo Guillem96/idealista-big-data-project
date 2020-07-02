@@ -95,9 +95,6 @@ print("\nTotal number of Distinct Cities:  " + str(cities.distinct().count()))
 property_count = cities.reduceByKey(lambda a, b: a + b)#.filter(lambda t: t[1])
 print(property_count.take(N))
 
-# Write Cities in a text/json file.
-property_count.saveAsTextFile(args.output)
-
 # Ordering decresingly by amount
 properties_ordered = property_count.takeOrdered(N, key = lambda x: -x[1])
 print("\nTop Cities with matching properties: \n")
