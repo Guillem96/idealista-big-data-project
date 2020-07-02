@@ -65,7 +65,7 @@ print("\nInitial Data:")
 print(data.take(3))
 
 # Filtering Columns
-simple_data = data.map(lambda r: (r[2], r[4], r[5], r[9], r[-1]))
+simple_data = data.map(lambda r: (r[2], r[4], r[5], r[9], r[12]))
 
 print("\nInitial Data - Important Columns Only:")
 print(simple_data.take(3))
