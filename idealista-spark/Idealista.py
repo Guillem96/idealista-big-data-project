@@ -46,7 +46,8 @@ print(sc)
 # Reading cleaned Idealist properties file
 parser = argparse.ArgumentParser()
 parser.add_argument("input", help="Input data")
-parser.add_argument("output", help="output data")
+parser.add_argument("output", help="Output data")
+parser.add_argument("top", help="Number of top-n elements")
 args = parser.parse_args()
 
 clean_data = sc.textFile(args.input)
@@ -81,9 +82,6 @@ filtered = simple_data.filter(lambda r: int(r[0]) >= minPhotos and float(r[1]) <
 print("\nFiltered Data:")
 print(filtered.take(3))
 
-# Defining number of Top Cities
-N = 8
-
 # Keeping only the City info and a value = 1
 cities = filtered.map(lambda h: (h[4],1))
 
@@ -93,10 +91,10 @@ print("\nTotal number of Distinct Cities:  " + str(cities.distinct().count()))
 
 # Counting and joining hashtags (#)
 property_count = cities.reduceByKey(lambda a, b: a + b)#.filter(lambda t: t[1])
-print(property_count.take(N))
+print(property_count.take(args.top))
 
 # Ordering decresingly by amount
-properties_ordered = property_count.takeOrdered(N, key = lambda x: -x[1])
+properties_ordered = property_count.takeOrdered(args.top, key = lambda x: -x[1])
 print("\nTop Cities with matching properties: \n")
 print(properties_ordered)
 
