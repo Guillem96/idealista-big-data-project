@@ -91,10 +91,10 @@ print("\nTotal number of Distinct Cities:  " + str(cities.distinct().count()))
 
 # Counting and joining hashtags (#)
 property_count = cities.reduceByKey(lambda a, b: a + b)#.filter(lambda t: t[1])
-print(property_count.take(args.top))
+print(property_count.take(int(args.top)))
 
 # Ordering decresingly by amount
-properties_ordered = property_count.takeOrdered(args.top, key = lambda x: -x[1])
+properties_ordered = property_count.takeOrdered(int(args.top), key = lambda x: -x[1])
 print("\nTop Cities with matching properties: \n")
 print(properties_ordered)
 
