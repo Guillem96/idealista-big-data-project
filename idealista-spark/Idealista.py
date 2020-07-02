@@ -37,20 +37,19 @@
 
 
 # Import useful libraries
-import pyspark, os, shutil, string, json, time
-
-begin = time.time()
+import pyspark, string, json, argparse
 
 # Creating Spark Context
-sc = SparkContext(appName="Idealista TopN Spark")
+sc = pyspark.SparkContext()
 print(sc)
 
-# Removing Output Files if they already exist
-if os.path.exists("hdfs:///user/dvc6/spark/Output_Idealista/*.json"): 
-    shutil.rmtree("hdfs:///user/dvc6/spark/Output_Idealista/*.json")
-    
 # Reading cleaned Idealist properties file
-clean_data = sc.textFile("hdfs:///user/dvc6/spark/Input_Idealista/*.csv")
+parser = argparse.ArgumentParser()
+parser.add_argument("input", help="Input data")
+parser.add_argument("output", help="output data")
+args = parser.parse_args()
+
+clean_data = sc.textFile(args.input)
 print("Header:")
 print(clean_data.first())
 
@@ -97,7 +96,7 @@ property_count = cities.reduceByKey(lambda a, b: a + b)#.filter(lambda t: t[1])
 print(property_count.take(N))
 
 # Write Cities in a text/json file.
-property_count.saveAsTextFile("hdfs:///user/dvc6/spark/Output_Idealista/properties_by_cities.json")
+property_count.saveAsTextFile(args.output)
 
 # Ordering decresingly by amount
 properties_ordered = property_count.takeOrdered(N, key = lambda x: -x[1])
@@ -108,7 +107,4 @@ print(properties_ordered)
 parallel_properties_ordered = sc.parallelize(properties_ordered)
 
 # Use the map function to write one element per line and write all elements to a single file (coalesce)
-parallel_properties_ordered.coalesce(1).map(lambda row: str(row[0]) + " " + str(row[1])).saveAsTextFile("hdfs:///user/dvc6/spark/Output_Idealista/propertiesTopN.json")
-
-print("\nExecution Time (s): " +  str(time.time() - begin))
-
+parallel_properties_ordered.coalesce(1).map(lambda row: str(row[0]) + " " + str(row[1])).saveAsTextFile(args.output)
