@@ -26,7 +26,7 @@ import java.net.URI;
 public class Main extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
-        System.setProperty("hadoop.home.dir","C:\\Hadoop");
+//        System.setProperty("hadoop.home.dir","C:\\Hadoop");
 
         int exitCode = ToolRunner.run(new Main(), args);
         System.exit(exitCode);
@@ -49,10 +49,10 @@ public class Main extends Configured implements Tool {
                 "newDevelopment,hasLift,priceByArea,hasPlan,has3DTour,has360,topNewDevelopment," +
                 "detailedType_typology,suggestedTexts_subtitle,suggestedTexts_title," +
                 "parkingSpace_hasParkingSpace,parkingSpace_isParkingSpaceIncludedInPrice," +
-                "detailedType_subTypology,parkingSpace_parkingSpacePrice,spain_state");
+                "detailedType_subTypology,parkingSpace_parkingSpacePrice");
 
         csvParserConf.set(ColumnsSelectorMapper.SELECTOR,
-                "spain_state:price,url,rooms,priceByArea,numPhotos,hasLift,propertyType,spain_state");
+                "province:price,url,rooms,priceByArea,numPhotos,hasLift,propertyType,province");
 
         val filterConf = new JobConf(false);
         filterConf.set(FilterRowsMapper.MIN_ROOMS, "4");
