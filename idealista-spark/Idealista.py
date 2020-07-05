@@ -50,7 +50,7 @@ parser.add_argument("output", help="Output data")
 parser.add_argument("top", help="Number of top-n elements")
 args = parser.parse_args()
 
-clean_data = sc.textFile(args.input)
+clean_data = sc.textFile(args.input, use_unicode=False)
 print("Header:")
 print(clean_data.first())
 
